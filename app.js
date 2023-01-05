@@ -2,6 +2,7 @@ const listConatainer = document.querySelector('[data-lists]')
 const newListForm = document.querySelector('[data-new-list-farm]')
 const newListInput = document.querySelector('[data-new-list-input]')
 const listDelete = document.querySelector('[data-list-delete]')
+const taskClearButton = document.querySelector('[data-task-clear-button]')
 const divContainer = document.querySelector('[data-container]')
 const listTaskCount = document.querySelector('[data-task-count]')
 const listTitle = document.querySelector('[data-list-title]')
@@ -28,11 +29,29 @@ listConatainer.addEventListener('click', (e) => {
   }
 })
 
+taskContainer.addEventListener('click', (e) => {
+  if (e.target.tagName.toLowerCase() === 'input') {
+    currentList = lists.find(list => list.id === selectedListIdKey)
+    const currentTask = currentList.tasks.find(task => task.id === e.target.id)
+    currentTask.complete = e.target.checked
+    save()
+    renderTaskCount(currentList)
+  }
+})
+
 listDelete.addEventListener('click', (e) => {
   lists = lists.filter((list) => list.id !== selectedListIdKey)
   selectedListIdKey = null
   saveAndRender()
 })
+
+taskClearButton.addEventListener('click', e =>{
+const currentList = lists.find(list => list.id === selectedListIdKey)
+currentList.tasks = currentList.tasks.filter(task => !task.complete)
+saveAndRender()
+
+})
+
 
 newListForm.addEventListener('submit', (e) => {
   e.preventDefault()
@@ -53,18 +72,26 @@ newTaskForm.addEventListener('submit', (e) => {
   if (taskName == null || taskName === '') return
   const task = createTask(taskName)
   newTaskInput.value = null
-  currentList = lists.find(list =>  list.id === selectedListIdKey)
+  currentList = lists.find(list => list.id === selectedListIdKey)
   currentList.tasks.push(task)
   saveAndRender()
 })
 
 
 function createList(name) {
-  return { id: Date.now().toString(), name: name, tasks: []} 
+  return {
+    id: Date.now().toString(),
+    name: name,
+    tasks: []
+  }
 }
 
-function createTask(name){
-  return {id: Date.now().toString(), name: name, complete:false}
+function createTask(name) {
+  return {
+    id: Date.now().toString(),
+    name: name,
+    complete: false
+  }
 }
 
 function saveAndRender() {
