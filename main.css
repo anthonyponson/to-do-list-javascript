@@ -24,7 +24,7 @@ body {
 }
 
 .active-list{
-  color: aqua;
+  color: red;
 }
 .title {
   grid-area: header;
